@@ -6,7 +6,7 @@ Function RequireAdmin {
 		Exit
 	}
 }
-#RequireAdmin
+RequireAdmin
 Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -28,8 +28,8 @@ $Button                          = New-Object system.Windows.Forms.Button
 $Button2                         = New-Object system.Windows.Forms.Button
 $Button3                         = New-Object system.Windows.Forms.Button
 $pictureBox                      = New-Object Windows.Forms.PictureBox
-$systext                    = New-Object system.Windows.Forms.Label
-$systext1                   = New-Object system.Windows.Forms.Label
+$systext                         = New-Object system.Windows.Forms.Label
+$systext1                        = New-Object system.Windows.Forms.Label
 
 
 #-- Form Begin
@@ -53,9 +53,9 @@ $imageBytes = [Convert]::FromBase64String($base64String)
 $ms = New-Object IO.MemoryStream($imageBytes, 0, $imageBytes.Length)
 $ms.Write($imageBytes, 0, $imageBytes.Length);
 $image1 = [System.Drawing.Image]::FromStream($ms, $true)
-$image1.Save("C:\windows\temp\BB_logo_temp.png")
+$image1.Save("C:\Users\Public\Pictures\AG_logo_temp.png")
 
-$image = [System.Drawing.Image]::Fromfile("C:\windows\temp\BB_logo_temp.png")   
+$image = [System.Drawing.Image]::Fromfile("C:\Users\Public\Pictures\AG_logo_temp.png")   
 $pictureBox.width=320
 $pictureBox.height=240
 $pictureBox.top=10
@@ -326,7 +326,28 @@ $SccmCheckBox2.Checked = $False
 $Form.controls.AddRange(@($SelectSchool,$CheckBox1,$CheckBox9,$CheckBox2,$CheckBox3,$Button,$Button2,$pictureBox,$label,$label1,$ComboBox2,$ComboBox3,$CheckBox6,$CheckBox7,$Button3,$ComboBox,$systext1,$systext))
 
 
+Function PowerSettings {
+#When I close the lid - Power Setting
+powercfg -setacvalueindex 381b4222-f694-41f0-9685-ff5bb260df2e 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0 #Plugged in
+#powercfg -setdcvalueindex 381b4222-f694-41f0-9685-ff5bb260df2e 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0 #Battery
+}
 
+Function Dell_DisplayLink_D6000 {
+$url = "https://dl.dell.com/FOLDER07518323M/1/DisplayLink-Dock-Driver_FF21H_WIN_10.1.2814.0_A04.EXE"
+$DownloadLocation = "C:\windows\Temp\Dell_Temp\"
+#$DownloadLocation = "C:\Users\lrazo\Downloads"
+$Dir_Temp = Test-Path "$DownloadLocation"
+if (!$Dir_Temp){
+New-Item -ItemType directory -Path $DownloadLocation -Force
+}
+$Software = "$DownloadLocation\DellDisplayLink.exe"
+$arguments = "/S"
+
+$WebClient = New-Object System.Net.WebClient
+$WebClient.DownloadFile("$Link",$Software);
+
+Start-Process $Software -ArgumentList $arguments -Wait
+}
 
 Function Copy_Chrome_Bookmarks {
 $UserName =  $ComboBox2.Text
@@ -363,7 +384,7 @@ Start-Sleep -Seconds 2
 #############Start and Exit Chrome
  $action = New-ScheduledTaskAction -Execute "C:\Program Files\Google\Chrome\Application\chrome.exe" -Argument "www.google.com"
  $trigger = New-ScheduledTaskTrigger -Once -At (get-date).AddSeconds(-10)
- $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -expand UserName)
+ $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance –ClassName Win32_ComputerSystem | Select-Object -expand UserName)
  $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
  Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force
  Start-ScheduledTask -TaskName "Chrome_Launch"
@@ -417,9 +438,9 @@ Write-Output "Hello, I clicked ok"
 #Bitlocker_Shortcut
     }
         if ($checkBox2.Checked){
+        #Function
+        Dell_DisplayLink_D6000
 
-#Function
-#Dell_Power
     }
       if ($checkBox3.Checked){
 
@@ -456,7 +477,7 @@ Copy_Outlook_Signatures
               if ($checkBox9.Checked){
 
 #Function
-CUCILync
+PowerSettings
 
     }
 
