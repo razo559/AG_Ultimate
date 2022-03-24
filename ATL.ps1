@@ -386,7 +386,7 @@ Start-Sleep -Seconds 2
  $trigger = New-ScheduledTaskTrigger -Once -At (get-date).AddSeconds(-10)
  $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -expand UserName)
  $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
- Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force
+ Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force 
  Start-ScheduledTask -TaskName "Chrome_Launch"
  
  $ProcessList = @(
