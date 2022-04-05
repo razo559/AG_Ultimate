@@ -1,8 +1,5 @@
 
 Start-Transcript -Path C:\windows\temp\ATL_QC_Log.txt -Append
-$t = '[DllImport("user32.dll")] public static extern bool ShowWindow(int handle, int state);'
-add-type -name win -member $t -namespace native
-[native.win]::ShowWindow(([System.Diagnostics.Process]::GetCurrentProcess() | Get-Process).MainWindowHandle, 0) | Clear-Host
 Function RequireAdmin {
 	If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
 		Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
@@ -151,7 +148,7 @@ $CheckBox9.Add_Click({
     Elseif($CheckBox9.Checked -eq $false) { $CheckBox9.BackColor = 'Transparent'}
 })
 
-$CheckBox1.text                  = "Dock Driver WD15"
+$CheckBox1.text                  = "Dock Driver D6000"
 $CheckBox1.AutoSize              = $false
 $CheckBox1.width                 = 250
 $CheckBox1.height                = 20
@@ -167,7 +164,7 @@ $CheckBox1.Add_Click({
 })
 
 
-$CheckBox2.text                  = 'Dock Driver D6000'
+$CheckBox2.text                  = 'Pin - Outlook'
 $CheckBox2.AutoSize              = $false
 $CheckBox2.width                 = 200
 $CheckBox2.height                = 20
@@ -328,7 +325,42 @@ $SccmCheckBox2.Checked = $False
 
 $Form.controls.AddRange(@($SelectSchool,$CheckBox1,$CheckBox9,$CheckBox2,$CheckBox3,$Button,$Button2,$pictureBox,$label,$label1,$ComboBox2,$ComboBox3,$CheckBox6,$CheckBox7,$Button3,$ComboBox,$systext1,$systext))
 
+Function Pin {
+#set-location C:\Users\lrazo\Downloads
 
+#
+$Word = '"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE" c:5386'
+$Outlook = '"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE" c:5386'
+$Zoom = '"C:\Program Files\Zoom\bin\Zoom.exe" c:5386'
+$Chrome = '"C:\Program Files\Google\Chrome\Application\chrome.exe" c:5386'
+$Webex = '"C:\Program Files\Cisco Spark\CiscoCollabHost.exe" c:5386'
+
+
+$SysPinUrl = "http://www.technosys.net/download.aspx?file=syspin.exe"
+$SysPinDownloadLocation = "C:\windows\Temp\Syspin\"
+#$SysPinDownloadLocation = "C:\Users\lrazo\Downloads"
+$Dir_Temp = Test-Path "$SysPinDownloadLocation"
+if (!$Dir_Temp){
+New-Item -ItemType directory -Path $SysPinDownloadLocation -Force
+}
+$SysPinSoftware = "$SysPinDownloadLocation\Syspin.exe"
+
+$SysPinWebClient = New-Object System.Net.WebClient
+$SysPinWebClient.DownloadFile("$SysPinUrl",$SysPinSoftware);
+
+
+Start-Process $SysPinSoftware $Word  #Pin c:5386 , Unpin c:5387
+
+
+
+
+
+
+ Invoke-Expression "taskkill /f /im explorer.exe"
+ Invoke-Expression "start explorer.exe"
+
+}
+}
 Function PowerSettings {
 #When I close the lid - Power Setting
 powercfg -setacvalueindex 381b4222-f694-41f0-9685-ff5bb260df2e 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0 #Plugged in
@@ -387,9 +419,9 @@ Start-Sleep -Seconds 2
 #############Start and Exit Chrome
  $action = New-ScheduledTaskAction -Execute "C:\Program Files\Google\Chrome\Application\chrome.exe" -Argument "www.google.com"
  $trigger = New-ScheduledTaskTrigger -Once -At (get-date).AddSeconds(-10)
- $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -expand UserName)
+ $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance –ClassName Win32_ComputerSystem | Select-Object -expand UserName)
  $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
- Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force 
+ Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force
  Start-ScheduledTask -TaskName "Chrome_Launch"
  
  $ProcessList = @(
@@ -436,14 +468,12 @@ Write-Output "Hello, I clicked ok"
 #(gpupdate) -join ""
 
     if ($checkBox1.Checked){
-    
+    Dell_DisplayLink_D6000
 #Function
-#Bitlocker_Shortcut
     }
         if ($checkBox2.Checked){
         #Function
-        Dell_DisplayLink_D6000
-
+#pin outlook
     }
       if ($checkBox3.Checked){
 
