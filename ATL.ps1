@@ -419,7 +419,7 @@ Start-Sleep -Seconds 2
 #############Start and Exit Chrome
  $action = New-ScheduledTaskAction -Execute "C:\Program Files\Google\Chrome\Application\chrome.exe" -Argument "www.google.com"
  $trigger = New-ScheduledTaskTrigger -Once -At (get-date).AddSeconds(-10)
- $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance –ClassName Win32_ComputerSystem | Select-Object -expand UserName)
+ $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -expand UserName)
  $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
  Register-ScheduledTask "Chrome_Launch" -InputObject $task -Force
  Start-ScheduledTask -TaskName "Chrome_Launch"
