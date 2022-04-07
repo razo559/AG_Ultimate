@@ -360,7 +360,7 @@ Start-Process $SysPinSoftware $Word  #Pin c:5386 , Unpin c:5387
  Invoke-Expression "start explorer.exe"
 
 }
-}
+
 Function PowerSettings {
 #When I close the lid - Power Setting
 powercfg -setacvalueindex 381b4222-f694-41f0-9685-ff5bb260df2e 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0 #Plugged in
